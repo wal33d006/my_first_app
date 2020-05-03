@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_first_app/my_new_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -62,6 +63,9 @@ class _MyHomePageState extends State<MyHomePage> {
   IconData icon = Icons.favorite_border;
   Color iconColor = Colors.blue;
 
+  TextEditingController controller = TextEditingController();
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -74,12 +78,13 @@ class _MyHomePageState extends State<MyHomePage> {
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          setState(() {
-            countryNames.add(MyClass(
-              countryName: 'UK',
-              cases: '4000',
-            ));
-          });
+          if (formKey.currentState.validate()) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => MyNewScreen(controller.text),
+              ),
+            );
+          }
         },
       ),
       appBar: AppBar(
@@ -107,54 +112,69 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   );
                 }),
-            Card(
-              elevation: 4.0,
-//              color: Colors.orange,
-              child: ListTile(
-                title: Text('Flutter bootcamp'),
-                subtitle: Text('F-07'),
-                leading: CircleAvatar(
-                  child: Text('F7'),
-                ),
-                trailing: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      icon = Icons.favorite;
-                      iconColor = Colors.red;
-                    });
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Form(
+                key: formKey,
+                child: TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'User name required';
+                    } else {
+                      return null;
+                    }
                   },
-                  child: Icon(
-                    icon,
-                    color: iconColor,
-                  ),
+                  controller: controller,
+                  decoration: InputDecoration(
+                      hintText: 'Enter your name',
+                      labelText: 'Name',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0))),
                 ),
               ),
             ),
-            Card(
-              elevation: 4.0,
-              child: ListTile(
-                title: Text('Flutter bootcamp'),
-                subtitle: Text('F-07'),
-                leading: CircleAvatar(
-                  child: Text('F7'),
-                ),
-                trailing: Icon(Icons.map),
-              ),
-            ),
             RaisedButton(
-              child: Text('Hello World'),
+              child: Text('Pick text'),
+              onPressed: () {
+                if (formKey.currentState.validate()) {
+                  print(controller.text);
+                }
+              },
             ),
-            RaisedButton(
-              child: Text('Hello World'),
-            ),
-            Row(
-              children: <Widget>[
-                RaisedButton(
-                  child: Text('Google'),
-                ),
-                Icon(Icons.remove_circle)
-              ],
-            )
+//            Card(
+//              elevation: 4.0,
+////              color: Colors.orange,
+//              child: ListTile(
+//                title: Text('Flutter bootcamp'),
+//                subtitle: Text('F-07'),
+//                leading: CircleAvatar(
+//                  child: Text('F7'),
+//                ),
+//                trailing: GestureDetector(
+//                  onTap: () {
+//                    setState(() {
+//                      icon = Icons.favorite;
+//                      iconColor = Colors.red;
+//                    });
+//                  },
+//                  child: Icon(
+//                    icon,
+//                    color: iconColor,
+//                  ),
+//                ),
+//              ),
+//            ),
+//            Card(
+//              elevation: 4.0,
+//              child: ListTile(
+//                title: Text('Flutter bootcamp'),
+//                subtitle: Text('F-07'),
+//                leading: CircleAvatar(
+//                  child: Text('F7'),
+//                ),
+//                trailing: Icon(Icons.map),
+//              ),
+//            ),
           ],
         ),
       ),
